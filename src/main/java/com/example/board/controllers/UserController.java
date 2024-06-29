@@ -1,5 +1,6 @@
 package com.example.board.controllers;
 
+import com.example.board.models.SignUpRequest;
 import com.example.board.models.User;
 import com.example.board.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,11 @@ public class UserController {
             return ResponseEntity.badRequest().body("User creation failed!");
         }
     }
-
+    @PostMapping("/login")
     public ResponseEntity<String> signInUser(
-            @RequestParam String username,
-            @RequestParam String password
-    ) {
-        boolean isAuthenticated = userService.authenticateUser(username, password);
+            @RequestBody SignUpRequest signupRequest
+            ) {
+        boolean isAuthenticated = userService.authenticateUser(signupRequest.getEmail(), signupRequest.getPassword());
         if (isAuthenticated) {
             return ResponseEntity.ok("User signed in successfully!");
         } else {

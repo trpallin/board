@@ -16,7 +16,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                "/api/users/signup",
+                                "/api/users/**",
                                 "/api/public/**",
                                 "/h2-console/**"
                         ).permitAll()
@@ -24,7 +24,7 @@ public class SecurityConfig {
                 )
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers(
-                                "/api/users/signup",
+                                "/api/users/**",
                                 "/h2-console/**"
                         )
                 ).headers(headers -> headers

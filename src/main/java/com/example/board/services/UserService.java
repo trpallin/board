@@ -20,16 +20,19 @@ public class UserService {
         if (userRepository.existsByUsername(user.getUsername())) {
             return false;
         }
+        if (userRepository.existsByEmail(user.getEmail())) {
+            return false;
+        }
         userRepository.save(user);
         return true;
     }
 
     @Transactional
     public boolean authenticateUser(
-            String username,
+            String email,
             String password
     ) {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByEmail(email);
         return user != null && user.getPassword().equals(password);
     }
 }
