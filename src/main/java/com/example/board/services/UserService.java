@@ -17,7 +17,7 @@ public class UserService {
 
     @Transactional
     public boolean createUser(User user) {
-        if (userRepository.existByUsername(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             return false;
         }
         userRepository.save(user);
