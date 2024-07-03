@@ -1,23 +1,28 @@
 package com.example.board.services;
 
+import com.example.board.models.CustomUserInfoDto;
+import com.example.board.models.SignInRequestDto;
 import com.example.board.models.User;
 import com.example.board.repositories.UserRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.board.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+    private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Transactional
     public boolean createUser(User user) {
@@ -33,11 +38,22 @@ public class UserService {
     }
 
     @Transactional
-    public boolean authenticateUser(
-            String email,
-            String password
-    ){
+    public String authenticateUser(
+            SignInRequestDto dto
+    ) {
+        String email = dto.getEmail();
+        String password = dto.getPassword();
         User user = userRepository.findByEmail(email);
-        return user != null && passwordEncoder.matches(password, user.getPassword());
+        if (user == null) {
+            throw new UsernameNotFoundException("Not found email");
+        }
+
+        if(!passwordEncoder.matches(password, user.getPassword())){
+            throw new BadCredentialsException("Invalid Password");
+        }
+
+        CustomUserInfoDto info = modelMapper.map(user, CustomUserInfoDto.class);
+
+        return jwtUtil.createAccessToken(info);
     }
 }
