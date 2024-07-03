@@ -29,7 +29,7 @@ public class UserController {
         }
     }
     @PostMapping("/login")
-    public ResponseEntity<?> signInUser(
+    public ResponseEntity<String> signInUser(
             @Valid @RequestBody SignInRequestDto requestDto
             ) {
         String token = this.userService.authenticateUser(requestDto);

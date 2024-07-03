@@ -7,7 +7,6 @@ import com.example.board.repositories.UserRepository;
 import com.example.board.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserService{
+public class UserService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final ModelMapper modelMapper;
